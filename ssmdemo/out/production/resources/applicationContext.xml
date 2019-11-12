@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+        <!-- 开启组件扫描 -->
+	    <!--注解注入:<context:annotation-config/>,使用<context:component-scan base-package=""默认开启注解。/>-->
+	    <!--Use-dafault-filters=”false”的情况下：<context:exclude-filter>指定的不扫描，<context:include-filter>指定的扫描-->
+	    <context:component-scan base-package="com.huatec.hiot_cloud.core"/>
+	    <!-- 配置视图解析器ViewResolver，负责将视图名解析成具体的视图技术，比如解析成html、jsp等 -->
+	    <bean id="viewResolver"
+	          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	        <!-- 前缀属性 -->
+	        <property name="prefix" value="/"/>
+	        <!-- 后缀属性 -->
+	        <property name="suffix" value=""/>
+	    </bean>
+	    <!-- 配置数据库连接信息 -->
+	    <util:properties id="jdbc" location="classpath:jdbc.properties"/>
+	    <bean id="dbcp" class="org.apache.commons.dbcp.BasicDataSource">
+           <property name="driverClassName" value="#{jdbc.driver}"/>
+           <property name="url" value="#{jdbc.url}"/>
+           <property name="username" value="#{jdbc.username}"/>
+           <property name="password" value="#{jdbc.password}"/>
+           <!--initialSize: 连接池初始值-->
+           <property name="initialSize" value="#{jdbc.initialSize}"/>
+           <!--maxIdle: 连接池最大空闲连接-->
+           <property name="maxIdle" value="#{jdbc.maxIdle}"/>
+           <!--minIdle: 连接池最小空闲连接-->
+           <property name="minIdle" value="#{jdbc.minIdle}"/>
+           <!--maxActive: 连接池最大连接数量-->
+           <property name="maxActive" value="#{jdbc.maxActive}"/>
+           <!--maxWait: 连接池最大连接数量-->
+           <property name="maxWait" value="#{jdbc.maxWait}"/>
+           <!--SQL查询,用来验证从连接池取出的连接-->
+           <property name="validationQuery" value="#{jdbc.validationQuery}"/>
+           <!--指明连接是否被空闲连接回收器(如果有)进行检验，如果检测失败，则连接将被从池中去除-->
+           <property name="testWhileIdle" value="#{jdbc.testWhileIdle}"/>
+           <!--在空闲连接回收器线程运行期间休眠的时间值,以毫秒为单位，一般比minEvictableIdleTimeMillis小-->
+           <property name="timeBetweenEvictionRunsMillis" value="#{jdbc.timeBetweenEvictionRunsMillis}"/>
+           <!--在每次空闲连接回收器线程(如果有)运行时检查的连接数量，最好和maxActive一致-->
+           <property name="numTestsPerEvictionRun" value="#{jdbc.numTestsPerEvictionRun}"/>
+           <!--连接池中连接，在时间段内一直空闲，被逐出连接池的时间(1000*60*60)，以毫秒为单位-->
+           <property name="minEvictableIdleTimeMillis" value="#{jdbc.minEvictableIdleTimeMillis}"/>
+        </bean>
+	    <!-- 配置SqlSessionFactoryBean -->
+	    <!-- 可以定义一些属性来指定Mybatis框架的配置信息 -->
+	    <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+	    <bean id="ssf" class="org.mybatis.spring.SqlSessionFactoryBean">
+            <!-- 数据源，注入连接信息 -->
+            <property name="dataSource" ref="dbcp"/>
+            <!--mybatis配置文件SqlMapConfig.xml，与spring管理不用
+            <property name="configLocation" value="classpath:TemplateSqlMap.xml"/> -->
+            <!-- 用于指定sql定义文件的位置(加classpath从src下找),自动扫描mapping.xml文件 -->
+            <property name="mapperLocations" value="classpath*:sqlmapper/*.xml"/>
+            <!-- 扫描 entity 包，这样在 mapper 中就可以使用简单类名，多个用 , 隔开 -->
+            <property name="typeAliasesPackage" value="com.huatec.hiot_cloud.core.entity"/>
+        </bean>
+	    <!--<bean id="redis" class="org.springframework.data.redis.connection.RedisConnectionFactory"></bean>-->
+	    <!-- 配置MapperScannerConfigurer -->
+	    <!-- 按指定包扫描dao接口，批量生成dao接口实现对象，id为接口名首字母小写，自动注入Dao实现类，无须手动实现 -->
+	    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+           <!-- 指定扫描com.huatec.hiot_cloud.core.dao包下所有接口 -->
+           <property name="basePackage" value="com.huatec.hiot_cloud.core.dao"/>
+           <!-- 注入sqlSessionFactory（此句可不写，自动注入sqlSessionFactory） -->
+           <!--<property name="sqlSessionFactory" ref="ssf"/>-->
+           <property name="sqlSessionFactoryBeanName" value="ssf"/>
+        </bean>
+	    <!--注解实现声明式事务-->
+	    <!--声明事务管理组件-->
+	    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+           <property name="dataSource" ref="dbcp" />
+        </bean>
+	    <!--带有@Transactional标记的方法会调用transactionManager组件追加事务控制-->
+	    <tx:annotation-driven transaction-manager="transactionManager"/>
+	</beans>
