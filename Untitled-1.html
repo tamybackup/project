@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style type="text/css">
+        .list {
+            width: 800px;
+            height: 40px;
+            background-color: #D5000A;
+            border-radius: 5px;
+            box-shadow: -2px 2px 5px black;
+            margin: auto;
+            text-align: left;
+        }
+
+        .nav {
+            list-style: none;
+        }
+
+        ul.nav li {
+            float: left;
+            padding: 5px 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        ul.nav li a {
+            color: white;
+            width: 75px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            padding: 5px;
+            display: block;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        ul.nav li a:hover {
+            border-radius: 5px;
+            background-color: #AD0007;
+        }
+
+        ul.nav li a.current {
+            border-radius: 5px;
+            background-color: #AD0007;
+        }
+
+        ul.sub_nav {
+            display: none;
+            position: absolute;
+            padding: 0 0 10px 0;
+            background: #D5000A;
+            border-radius: 0 0 5px 5px;
+            left: 0;
+            top: 40px;
+            box-shadow: #333 0 1px 1px;
+        }
+
+        ul.sub_nav li {
+            float: none;
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="list">
+
+        <ul class="nav">
+            <li><a class="current">首页</a></li>
+
+            <li><a href="#">电子商务</a>
+                <ul class="sub_nav">
+                    <li><a href="#">电子商务</a></li>
+                    <li><a href="#">子菜单二</a></li>
+                    <li><a href="#">子菜单三</a></li>
+                    <li><a href="#">子菜单四</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#">网络营销</a>
+                <ul class="sub_nav">
+                    <li><a href="#">网络营销</a></li>
+                    <li><a href="#">子菜单二</a></li>
+                    <li><a href="#">子菜单三</a></li>
+                    <li><a href="#">子菜单四</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#">客服服务</a>
+                <ul class="sub_nav">
+                    <li><a href="#">子菜单一</a></li>
+                    <li><a href="#">子菜单二</a></li>
+                    <li><a href="#">子菜单三</a></li>
+                    <li><a href="#">子菜单四</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#">工程案例</a>
+                <ul class="sub_nav">
+                    <li><a href="#">子菜单一</a></li>
+                    <li><a href="#">子菜单二</a></li>
+                    <li><a href="#">子菜单三</a></li>
+                    <li><a href="#">子菜单四</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#">行业资讯</a>
+                <ul class="sub_nav">
+                    <li><a href="#">子菜单一</a></li>
+                    <li><a href="#">子菜单二</a></li>
+                    <li><a href="#">子菜单三</a></li>
+                    <li><a href="#">子菜单四</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#">联系我们</a>
+                <ul class="sub_nav">
+                    <li><a href="#">子菜单一</a></li>
+                    <li><a href="#">子菜单二</a></li>
+                    <li><a href="#">子菜单三</a></li>
+                    <li><a href="#">子菜单四</a></li>
+                </ul>
+            </li>
+
+        </ul>
+        <script type="text/javascript" src="jquery-1.7.2.js"></script>
+        <script type="text/javascript">
+            $(".nav li").mouseover(function () {
+                $(this).find('ul').slideDown();
+            });
+            $(".nav li").mouseleave(function () {
+                $(this).find('ul').slideUp();
+            });
+        </script>
+    </div>
+</body>
+
+</html>
